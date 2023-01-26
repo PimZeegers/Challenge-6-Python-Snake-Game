@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 import time
 import random
+easteregg=[]
 
 SIZE = 40 #Vakjes grootte,
 BACKGROUND_COLOR = (33, 84, 27) #Achtergrond kleur
@@ -26,7 +27,6 @@ class Snake:
         self.parent_screen = parent_screen
         self.image = pygame.image.load("resources/block.jpg").convert()
         self.direction = 'down'
-
         self.length = 1
         self.x = [40]
         self.y = [40]
@@ -72,12 +72,16 @@ class Snake:
         self.length += 1
         self.x.append(-1)
         self.y.append(-1)
+        if self.length == 10: #Bij .. lengte in blokken activeer de easteregg
+            print("Gelukt!") # Print gelukt in de console voor conformatie dat het werkt, voegt niets toe aan de game, is ook niet in game te zien.
+            self.image = pygame.image.load("resources/Easteregg.jpg").convert() # vervangt het plaatje van de slang naar gouden eieren.
+            # Moet nog code toegevoegd worden dat de slang na 5 seconden weer terug veranderd in de normale slang.
 
 class Game:  
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Pim & Tibo's game")
-        self.surface = pygame.display.set_mode((1000, 800))
+        self.surface = pygame.display.set_mode((1000, 800)) #scherm-grootte instellen naar 
         self.snake = Snake(self.surface)
         self.snake.draw()
         self.apple = Apple(self.surface)
@@ -112,13 +116,12 @@ class Game:
 
         # als de snake de muur raakt 
         if not (0 <= self.snake.x[0] <= 1000 and 0 <= self.snake.y[0] <= 800):
-            self.play_sound('crash')
             raise "Collision Occured"
 
     def display_score(self):                                                    #Score displayen
         font = pygame.font.SysFont('arial',30)                                  #Font setting,arial grootte 30.
         score = font.render(f"Score: {self.snake.length}",True,(200,200,200))   #De score bepalen met behulp van de lengte van de slang
-        self.surface.blit(score,(850,10))                                       #
+        self.surface.blit(score,(850,10))
 
     def show_game_over(self):
         self.surface.fill(BACKGROUND_COLOR)
@@ -127,7 +130,6 @@ class Game:
         self.surface.blit(line1, (200, 300))
         line2 = font.render("Opnieuw: Enter, Afsluiten: Escape", True, (255, 255, 255))
         self.surface.blit(line2, (200, 350))
-
         pygame.display.flip()
 
     def run(self):
